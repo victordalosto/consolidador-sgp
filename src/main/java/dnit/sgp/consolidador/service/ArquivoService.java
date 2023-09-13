@@ -35,10 +35,18 @@ public class ArquivoService {
 
 
     public List<Path> getListArquivosWithName(String fileName, String directory) throws IOException {
-        var list = cacheSearch(directory);
-        return list.stream()
+        var list = cacheSearch(directory)
+                .stream()
                 .filter(path -> path.getFileName().toString().toUpperCase().contains(fileName.toUpperCase()))
                 .toList();
+        if (list == null || list.size() <= 1) {
+            return list;
+        }
+        var opt = list.stream().filter(f -> f.getFileName().toString().toUpperCase().contains("FX2")).findFirst();
+        if (opt.isPresent()) {
+            return List.of(opt.get());
+        }
+        return list;
     }
 
 
@@ -48,6 +56,18 @@ public class ArquivoService {
                 .filter(path -> path.getFileName().toString().toUpperCase().contains(fileName.toUpperCase()))
                 .findFirst()
                 .orElse(null);
+    }
+
+
+
+    public List<String> buscaDadosNoArquivo(String searchKey, String fileName, String directory) throws IOException {
+        var arquivo = getArquivoWithName(fileName, directory);
+        if (arquivo == null)
+            return null;
+        return Files.readAllLines(arquivo)
+                    .stream()
+                    .filter(p -> p.toUpperCase().startsWith(searchKey.toUpperCase()))
+                    .toList();
     }
 
 

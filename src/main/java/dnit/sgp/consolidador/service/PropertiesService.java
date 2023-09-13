@@ -11,7 +11,7 @@ public class PropertiesService {
     private final String caminhoConfiguracoes;
 
 
-    public String getProperty(String key) throws IOException {
+    public String getParam(String key) throws IOException {
         try (var fis = new FileInputStream(caminhoConfiguracoes)) {
             var properties = new Properties();
             properties.load(fis);

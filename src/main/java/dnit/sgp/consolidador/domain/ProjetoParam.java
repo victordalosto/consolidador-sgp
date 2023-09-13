@@ -4,12 +4,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import dnit.sgp.consolidador.helper.Util;
 import lombok.Data;
 
 
 @Data
 public class ProjetoParam {
 
+    private Double kmInicial;
+    private Double kmFinal;
     private Double VR;
     private String criterioVR;
     private String camadaCritica;
@@ -24,15 +27,17 @@ public class ProjetoParam {
 
     public ProjetoParam(String linhaArquivoParamsPar) {
         String[] split = linhaArquivoParamsPar.split(",");
-        this.VR = Double.parseDouble(split[7]);
+        this.kmInicial = Util.converteDouble(split[2]);
+        this.kmFinal = Util.converteDouble(split[3]);
+        this.VR = Util.converteDouble(split[7]);
         this.criterioVR = split[8];
         this.camadaCritica = split[9];
         this.diagnostico = split[10];
         this.medida = split[12];
         this.tipoCP = split[13];
-        this.hc = Double.parseDouble(split[14]);
-        this.hr = Double.parseDouble(split[15]);
-        this.dp = Double.parseDouble(split[16]);
+        this.hc = Util.converteDouble(split[14]);
+        this.hr = Util.converteDouble(split[15]);
+        this.dp = Util.converteDouble(split[16]);
     }
 
 
