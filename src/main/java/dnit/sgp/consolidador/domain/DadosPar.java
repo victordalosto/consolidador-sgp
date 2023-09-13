@@ -65,9 +65,10 @@ public class DadosPar {
         return Math.min(getICS_IRI(), getICS_IGG());
     }
 
+
     public String getConceitoICS() {
         Double ics = getICS();
-        if (ics == 3.0)
+        if (Math.abs(3.0 - ics) <= 0.1)
             return "Regular";
         if (ics < 3.0)
             return "Ruim";

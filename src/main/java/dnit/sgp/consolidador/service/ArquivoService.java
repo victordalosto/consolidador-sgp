@@ -66,7 +66,7 @@ public class ArquivoService {
             return null;
         return Files.readAllLines(arquivo)
                     .stream()
-                    .filter(p -> p.toUpperCase().startsWith(searchKey.toUpperCase()))
+                    .filter(p -> p.toUpperCase().contains(searchKey.toUpperCase()))
                     .toList();
     }
 

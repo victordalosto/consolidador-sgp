@@ -32,6 +32,7 @@ public class ModeloConsolidado {
             linha.append(titulo.getRegiao() + ";");
             DadosPar par = dadosPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst().get();
             var optParamsPar = dadosParamPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
+            linha.append(par.getRodovia() + ";");
             linha.append(par.getKmInicial() + ";");
             linha.append(par.getKmFinal() + ";");
             linha.append(par.getExtensao() + ";");
@@ -237,7 +238,6 @@ public class ModeloConsolidado {
 
             if (optNec.isPresent())
                 linha.append(optNec.get().getVRfx4());
-            linha.append(";");
 
             linha.append("\n");
         }
