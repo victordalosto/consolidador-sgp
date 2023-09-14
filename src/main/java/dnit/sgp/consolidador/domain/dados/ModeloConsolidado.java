@@ -1,7 +1,8 @@
-package dnit.sgp.consolidador.domain;
+package dnit.sgp.consolidador.domain.dados;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
 import dnit.sgp.consolidador.helper.Util;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,24 +25,37 @@ public class ModeloConsolidado {
 
         StringBuilder linha = new StringBuilder();
         for (int i=0; i<dadosPar.size(); i++) {
-            System.out.println(titulo);
             Double kmInicial = dadosPar.get(i).getKmInicial();
+
+            var par = dadosPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst().get();
+
+            var optParamsPar = Optional.ofNullable(dadosParamPar)
+                                       .flatMap(lista -> lista.stream()
+                                       .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                       .findFirst());
+
+            var optProjeto = Optional.ofNullable(dadosProjeto)
+                                     .flatMap(lista -> lista.stream()
+                                     .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                     .findFirst());
+
             linha.append(titulo.getSNV() + ";");
             linha.append(titulo.getVersao() + ";");
             linha.append(titulo.getSentido() + ";");
             linha.append(titulo.getBR() + ";");
             linha.append(titulo.getUF() + ";");
             linha.append(titulo.getRegiao() + ";");
-            DadosPar par = dadosPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst().get();
-            var optParamsPar = dadosParamPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
+
             linha.append(par.getRodovia() + ";");
             linha.append(par.getKmInicial() + ";");
             linha.append(par.getKmFinal() + ";");
             linha.append(par.getExtensao() + ";");
-            if (optParamsPar.isPresent()) {
+
+            if (optParamsPar != null && optParamsPar.isPresent()) {
                 linha.append(optParamsPar.get().getTipoPav());
             }
             linha.append(";");
+
             linha.append(par.getVDM() + ";");
             linha.append(par.getNanoUSACE() + ";");
             linha.append(par.getNanoAASHTO() + ";");
@@ -58,65 +72,61 @@ public class ModeloConsolidado {
             linha.append(par.getICS() + ";");
             linha.append(par.getConceitoICS() + ";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getIdade());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getE1());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getE2());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getE3());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getEsl());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getD0ref());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getSnef());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getRc());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getJdr());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getEccp());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getKef());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getH1());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getH2());
             linha.append(";");
 
-            if (optParamsPar.isPresent())
+            if (optParamsPar != null && optParamsPar.isPresent())
                 linha.append(optParamsPar.get().getH3());
             linha.append(";");
-
-            var optProjeto =
-                dadosProjeto == null ? null :
-                dadosProjeto.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
 
             if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getVR());
@@ -156,91 +166,91 @@ public class ModeloConsolidado {
 
             var optNec = dadosNec.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getAcostLE());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHracLE());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHcLE());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getFaixa1());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHc1());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHr1());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getFaixa2());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHc2());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHr2());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getFaixa3());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHc3());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHr3());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getFaixa4());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHc4());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHr4());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getAcostLD());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHracLD());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getHracLD());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getVRfx1());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getVRfx2());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getVRfx3());
             linha.append(";");
 
-            if (optNec.isPresent())
+            if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getVRfx4());
 
             linha.append("\n");

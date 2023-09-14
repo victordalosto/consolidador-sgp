@@ -38,33 +38,30 @@ public class ArquivoService {
 
 
     public List<Path> getListArquivosWithName(String fileName, String directory) throws IOException {
-        var list = cacheSearch(directory)
-                .stream()
-                .filter(path -> path.getFileName().toString().toUpperCase().contains(fileName.toUpperCase()))
-                .toList();
-        if (list == null || list.size() <= 1) {
-            return list;
+        var list = cacheSearch(directory);
+        if (list == null) {
+            return null;
         }
-        var opt = list.stream().filter(f -> f.getFileName().toString().toUpperCase().contains("FX2")).findFirst();
-        if (opt.isPresent()) {
-            return List.of(opt.get());
-        }
-        return list;
+        return list.stream()
+                   .filter(path -> path.getFileName().toString().toUpperCase().contains(fileName.toUpperCase()))
+                   .toList();
     }
 
 
     public Path getArquivoWithName(String fileName, String directory) throws IOException {
         var list = cacheSearch(directory);
+        if (list == null) {
+            return null;
+        }
         return list.stream()
-                .filter(path -> path.getFileName().toString().toUpperCase().contains(fileName.toUpperCase()))
-                .findFirst()
-                .orElse(null);
+                   .filter(path -> path.getFileName().toString().toUpperCase().contains(fileName.toUpperCase()))
+                   .findFirst()
+                   .orElse(null);
     }
 
 
 
-    public List<String> buscaDadosNoArquivo(String searchKey, String fileName, String directory) throws IOException {
-        var arquivo = getArquivoWithName(fileName, directory);
+    public List<String> buscaDadosNoArquivo(String searchKey, Path arquivo) throws IOException {
         if (arquivo == null)
             return null;
         return Files.readAllLines(arquivo)
@@ -79,8 +76,6 @@ public class ArquivoService {
             file.delete();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(sb.toString());
-
-            System.out.println("Gravado: " + file);
         } catch (IOException e) {
             System.err.println("An error occurred while writing to the file: " + e.getMessage());
         }
