@@ -1,6 +1,7 @@
 package dnit.sgp.consolidador.domain;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import dnit.sgp.consolidador.helper.Util;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class ModeloConsolidado {
 
         StringBuilder linha = new StringBuilder();
         for (int i=0; i<dadosPar.size(); i++) {
+            System.out.println(titulo);
             Double kmInicial = dadosPar.get(i).getKmInicial();
             linha.append(titulo.getSNV() + ";");
             linha.append(titulo.getVersao() + ";");
@@ -112,41 +114,43 @@ public class ModeloConsolidado {
                 linha.append(optParamsPar.get().getH3());
             linha.append(";");
 
-            var optProjeto = dadosProjeto.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
+            var optProjeto =
+                dadosProjeto == null ? null :
+                dadosProjeto.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getVR());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getCriterioVR());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getCamadaCritica());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getDiagnostico());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getMedida());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getTipoCP());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getHc());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getHr());
             linha.append(";");
 
-            if (optProjeto.isPresent())
+            if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getDp());
             linha.append(";");
 

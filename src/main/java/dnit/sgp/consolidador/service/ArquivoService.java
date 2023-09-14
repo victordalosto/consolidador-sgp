@@ -1,4 +1,7 @@
 package dnit.sgp.consolidador.service;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,6 +71,19 @@ public class ArquivoService {
                     .stream()
                     .filter(p -> p.toUpperCase().contains(searchKey.toUpperCase()))
                     .toList();
+    }
+
+
+    public void salvaArquivo(StringBuffer sb, File file) {
+        if (file.exists())
+            file.delete();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(sb.toString());
+
+            System.out.println("Gravado: " + file);
+        } catch (IOException e) {
+            System.err.println("An error occurred while writing to the file: " + e.getMessage());
+        }
     }
 
 

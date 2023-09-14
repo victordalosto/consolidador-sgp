@@ -26,7 +26,7 @@ public class ProjetoParam {
 
 
     public ProjetoParam(String linhaArquivoParamsPar) {
-        String[] split = linhaArquivoParamsPar.split(",");
+        String[] split = linhaArquivoParamsPar.replaceAll(", ", ". ").split(",");
         this.kmInicial = Util.converteDouble(split[2]);
         this.kmFinal = Util.converteDouble(split[3]);
         this.VR = Util.converteDouble(split[7]);
