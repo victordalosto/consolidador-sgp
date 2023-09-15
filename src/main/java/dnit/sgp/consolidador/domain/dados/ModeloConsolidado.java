@@ -25,19 +25,29 @@ public class ModeloConsolidado {
 
         StringBuilder linha = new StringBuilder();
         for (int i=0; i<dadosPar.size(); i++) {
-            Double kmInicial = dadosPar.get(i).getKmInicial();
 
-            var par = dadosPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst().get();
+            var par = dadosPar.get(i);
+            var key = par.getKey();
+            var kmInicial = par.getKmInicial();
 
             var optParamsPar = Optional.ofNullable(dadosParamPar)
                                        .flatMap(lista -> lista.stream()
                                        .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                       .filter(d -> d.getKey().equalsIgnoreCase(key))
                                        .findFirst());
 
             var optProjeto = Optional.ofNullable(dadosProjeto)
                                      .flatMap(lista -> lista.stream()
                                      .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                     .filter(d -> d.getKey().equalsIgnoreCase(key))
                                      .findFirst());
+
+
+            var optNec = Optional.ofNullable(dadosNec)
+                                  .flatMap(lista -> lista.stream()
+                                  .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                  .filter(d -> d.getKey().equalsIgnoreCase(key))
+                                  .findFirst());
 
             linha.append(titulo.getSNV() + ";");
             linha.append(titulo.getVersao() + ";");
@@ -163,8 +173,6 @@ public class ModeloConsolidado {
             if (optProjeto != null && optProjeto.isPresent())
                 linha.append(optProjeto.get().getDp());
             linha.append(";");
-
-            var optNec = dadosNec.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst();
 
             if (optNec != null && optNec.isPresent())
                 linha.append(optNec.get().getAcostLE());

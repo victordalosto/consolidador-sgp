@@ -43,6 +43,7 @@ public class EstratDadosPar {
     private Double h1;
     private Double h2;
     private Double h3;
+    private String ano;
 
 
 

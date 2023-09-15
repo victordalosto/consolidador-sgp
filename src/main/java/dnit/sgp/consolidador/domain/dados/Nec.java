@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class Nec {
 
+    private String key;
     private Double kmInicial;
     private Double kmFinal;
     private String acostLE;

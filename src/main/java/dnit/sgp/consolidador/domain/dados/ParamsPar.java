@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class ParamsPar {
 
+    private String key;
     private Double kmInicial;
     private Double kmFinal;
     private String tipoPav;

@@ -28,14 +28,17 @@ public class EstrategConsolidado {
     {
 
         StringBuilder linha = new StringBuilder();
+
         for (int i=0; i<dadosPar.size(); i++) {
-            Double kmInicial = dadosPar.get(i).getKmInicial();
 
-            var par = dadosPar.stream().filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial)).findFirst().get();
+            var par = dadosPar.get(i);
+            var ano = par.getAno();
+            var kmInicial = par.getKmInicial();
 
-            var optParamsPar = Optional.ofNullable(dadosParamPar)
+            var optPPIano = Optional.ofNullable(dadosPPIano)
                                        .flatMap(lista -> lista.stream()
                                        .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                       .filter(d -> d.getAno().equals(ano))
                                        .findFirst());
 
             var optProjeto = Optional.ofNullable(dadosProjeto)

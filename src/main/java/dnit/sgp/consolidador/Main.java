@@ -77,21 +77,29 @@ public class Main {
 
         for (var arquivoPar : arquivosPar) {
             var titulo = new Titulo(arquivoPar.getFileName().toString(), props);
-            var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
-
             println(" ..Dado: " + titulo.getSNV());
+
             String key = titulo.getSNV() + "_" + titulo.getSentido();
+            var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
+            if (dadosPar != null)
+                dadosPar.forEach(p -> p.setKey(key));
 
             var arquivoParamPar = arquivoService.getListArquivosWithName(key, "Calc/Params");
             arquivoParamPar = removeArquivosComString("_FX1", arquivoParamPar);
             var dadosParamPar = ParamsPar.CreateListComDadosDeDentroDoParampar(arquivoParamPar);
+            if (dadosParamPar != null)
+                dadosParamPar.forEach(p -> p.setKey(key));
 
             var arquivoProjeto = arquivoService.getListArquivosWithName(key, "Calc/Projeto/Params");
             arquivoProjeto = removeArquivosComString("_FX1", arquivoProjeto);
             var dadosProjeto = ProjetoParam.CreateListComDadosDeDentroDoPar(arquivoProjeto);
+            if (dadosProjeto != null)
+                dadosProjeto.forEach(p -> p.setKey(key));
 
             var dadosNec = arquivoService.buscaDadosNoArquivo(key, arquivoNec);
             var nec = Nec.createListComDadosDentroDoNec(dadosNec);
+            if (nec != null)
+                nec.forEach(p -> p.setKey(key));
 
             var modelo = new ModeloConsolidado(
                                             titulo,
@@ -137,13 +145,16 @@ public class Main {
                 if (ano.isEmpty()) {
                     continue;
                 }
-                var titulo = new Titulo(arquivoPar.getFileName().toString(), props);
+                Titulo titulo = new Titulo(arquivoPar.getFileName().toString(), props);
+                println(" ....Dado: " + titulo.getSNV() + ", Ano: " + ano);
+
+                List<EstratDadosPar> dadosPar = null;
                 List<PPIAno> dadoPPIano = null;
                 List<QTpista> dadoQTpista = null;
                 List<QTacost> dadoQTacost = null;
-                println(" ....Dado: " + titulo.getSNV() + ", Ano: " + ano);
 
-                var dadosPar = EstratDadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
+                dadosPar = EstratDadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
+                dadosPar.stream().forEach(par -> par.setAno(ano));
 
                 var arquivoPPIano = arquivosPPIano.stream()
                                    .filter(p -> contemNoNome(p, "ppi_ano " + ano + ".csv"))
@@ -159,6 +170,7 @@ public class Main {
                                                         .findFirst();
                     if (arquivoQTpista.isPresent()) {
                         dadoQTpista = QTpista.CreateListComDadosDeDentroDoQTpista(arquivoQTpista.get());
+
                     }
                 }
 
