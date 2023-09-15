@@ -31,6 +31,7 @@ public class ArquivoService {
                 filesCache.put(directory, arquivos);
             } catch (IOException e) {
                 e.printStackTrace();
+                throw new RuntimeException(e.getMessage());
             }
         }
         return filesCache.get(directory);
@@ -75,9 +76,10 @@ public class ArquivoService {
         if (file.exists())
             file.delete();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            System.out.println(" ..Salvando arquivo em: " + file);
             writer.write(sb.toString());
         } catch (IOException e) {
-            System.err.println("An error occurred while writing to the file: " + e.getMessage());
+            System.err.println("Não foi possivel salvar o consolidador: " + e.getMessage());
         }
     }
 

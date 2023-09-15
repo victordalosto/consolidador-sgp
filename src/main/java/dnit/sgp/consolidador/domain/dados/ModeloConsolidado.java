@@ -2,7 +2,7 @@ package dnit.sgp.consolidador.domain.dados;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
+import dnit.sgp.consolidador.domain.Titulo;
 import dnit.sgp.consolidador.helper.Util;
 import lombok.Data;
 import lombok.NoArgsConstructor;
