@@ -37,7 +37,7 @@ public class Main {
         bootStrap();
         println("ok");
 
-        print("\n Consolidando Dados.. ");
+        println("\n Consolidando Dados.. ");
         if ("true".equals(props.getParam("consolidar_dados"))) {
             consolidaPAR();
             println("Consolidando Dados.. ok");
@@ -125,11 +125,10 @@ public class Main {
             var pastaEstrat = "Calc/Estrat_" + i;
             println(" ..Rodando: " + pastaEstrat);
 
+            var arquivosPar = arquivoService.getListArquivosWithName("PAR_", pastaEstrat + "/Params");
+            var arquivosPPIano = arquivoService.getListArquivosWithName("PPI_Ano", pastaEstrat);
             var arquivosQTpista = arquivoService.getListArquivosWithName("QTpista_", pastaEstrat);
             var arquivosQTacost = arquivoService.getListArquivosWithName("QTacost_", pastaEstrat);
-            var arquivosPPIano = arquivoService.getListArquivosWithName("PPI_Ano", pastaEstrat);
-
-            var arquivosPar = arquivoService.getListArquivosWithName("PAR_", pastaEstrat + "/Params");
 
             if (arquivosPar == null || arquivosPPIano == null) {
                 continue;
