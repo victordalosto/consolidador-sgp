@@ -56,7 +56,7 @@ public class Util {
 
 
     public static boolean contemNoNome(Path p, String text) {
-        return p.getFileName().toString().toLowerCase().contains(text);
+        return p.getFileName().toString().toLowerCase().contains(text.toLowerCase());
     }
 
 

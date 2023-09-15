@@ -6,6 +6,7 @@ import static dnit.sgp.consolidador.helper.Util.removeArquivosComString;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Collectors;
 import dnit.sgp.consolidador.domain.Titulo;
 import dnit.sgp.consolidador.domain.dados.DadosPar;
@@ -14,6 +15,10 @@ import dnit.sgp.consolidador.domain.dados.Nec;
 import dnit.sgp.consolidador.domain.dados.ParamsPar;
 import dnit.sgp.consolidador.domain.dados.ProjetoParam;
 import dnit.sgp.consolidador.domain.estrateg.EstratDadosPar;
+import dnit.sgp.consolidador.domain.estrateg.EstrategConsolidado;
+import dnit.sgp.consolidador.domain.estrateg.PPIAno;
+import dnit.sgp.consolidador.domain.estrateg.QTacost;
+import dnit.sgp.consolidador.domain.estrateg.QTpista;
 import dnit.sgp.consolidador.helper.Util;
 import dnit.sgp.consolidador.service.ArquivoService;
 import dnit.sgp.consolidador.service.PropertiesService;
@@ -133,43 +138,49 @@ public class Main {
                     continue;
                 }
                 var titulo = new Titulo(arquivoPar.getFileName().toString(), props);
-                System.out.println("\n" + arquivoPar);
-                System.out.println(titulo);
+                List<PPIAno> dadoPPIano = null;
+                List<QTpista> dadoQTpista = null;
+                List<QTacost> dadoQTacost = null;
+                println(" ....Dado: " + titulo.getSNV() + ", Ano: " + ano);
+
                 var dadosPar = EstratDadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
-                var dadosPPIAno = arquivosPPIano.stream()
-                                   .filter(p -> contemNoNome(p, "ppi_ano " + ano))
-                                   .filter(p -> contemNoNome(p, titulo.getSNV().toLowerCase()))
-                                   .filter(p -> contemNoNome(p, "_" + titulo.getSentido().toLowerCase() + "_"))
-                                   .collect(Collectors.toList());
-                System.out.println(dadosPPIAno);
 
-            }
+                var arquivoPPIano = arquivosPPIano.stream()
+                                   .filter(p -> contemNoNome(p, "ppi_ano " + ano + ".csv"))
+                                   .findFirst();
 
-
-            for (var ppiAno : arquivosPPIano) {
-                String ano = ppiAno.getFileName().toString().replaceAll("[^0-9]+", "");
-                if (ano.isEmpty()) {
-                    continue;
+                if (arquivoPPIano.isPresent()) {
+                    dadoPPIano = PPIAno.CreateListComDadosDeDentroDoPPIano(arquivoPPIano.get());
                 }
 
+                if (arquivosQTpista != null) {
+                    var arquivoQTpista = arquivosQTpista.stream()
+                                                        .filter(p -> contemNoNome(p, titulo.getSNV() + "_" + titulo.getSentido()))
+                                                        .findFirst();
+                    if (arquivoQTpista.isPresent()) {
+                        dadoQTpista = QTpista.CreateListComDadosDeDentroDoQTpista(arquivoQTpista.get());
+                    }
+                }
 
+                if (arquivosQTacost != null) {
+                    var arquivoQTacost = arquivosQTacost.stream()
+                                                        .filter(p -> contemNoNome(p, titulo.getSNV() + "_" + titulo.getSentido()))
+                                                        .findFirst();
+                    if (arquivoQTacost.isPresent()) {
+                        dadoQTacost = QTacost.CreateListComDadosDeDentroDoQTacost(arquivoQTacost.get());
+                    }
+                }
 
-                var dadosPPIano = arquivoService.buscaDadosNoArquivo(ano, ppiAno);
+                var modelo = new EstrategConsolidado(
+                    titulo,
+                    dadosPar,
+                    dadoPPIano,
+                    dadoQTpista,
+                    dadoQTacost
+                );
+
 
             }
-
-            println("");
-            // println("Arquivospar: " + arquivosPar);
-            // println("QTpistsa: " + arquivosQTpista);
-            // println("QTacost: " + arquivosQTacost);
-            arquivosPar.stream()
-                       .filter(p -> p.getFileName().toString().toUpperCase().contains("_FX2_"))
-                       .collect(Collectors.toList());
-
-            println("" + arquivosPar.size());
-
-
-
 
 
 
