@@ -193,7 +193,7 @@ public class Main {
                     dadoQTacost
                 );
 
-                linhas.append(modelo.getLine());
+                linhas.append(modelo.getConsolidacao());
             }
             arquivoService.salvaArquivo("Consolidado-Estrat-" + i, linhas);
             System.out.println(" ..Estrategia: " + i + " ok");

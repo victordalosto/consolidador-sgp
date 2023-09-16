@@ -2,17 +2,19 @@ package dnit.sgp.consolidador.domain.estrateg;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import dnit.sgp.consolidador.domain.Consolidador;
 import dnit.sgp.consolidador.domain.Titulo;
 import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.service.DadosService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 @Data
 @NoArgsConstructor
-public class EstrategConsolidado {
+public class EstrategConsolidado implements Consolidador {
 
-    private String line;
+    private DadosService dados = new DadosService();
 
     public EstrategConsolidado(
                        Titulo titulo,
@@ -22,8 +24,6 @@ public class EstrategConsolidado {
                        List<QTacost> dadosQTacost
                        ) throws IOException
     {
-
-        StringBuilder linha = new StringBuilder();
 
         for (int i=0; i<dadosPar.size(); i++) {
 
@@ -39,149 +39,134 @@ public class EstrategConsolidado {
                                     .findFirst());
 
             var optQTpista = Optional.ofNullable(dadosQTpista)
-                                    .flatMap(lista -> lista.stream()
-                                    .filter(d -> d.getAno().equals(ano))
-                                    .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
-                                    .findFirst());
+                                     .flatMap(lista -> lista.stream()
+                                     .filter(d -> d.getAno().equals(ano))
+                                     .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                     .findFirst());
 
             var optQTacost = Optional.ofNullable(dadosQTacost)
-                                    .flatMap(lista -> lista.stream()
-                                    .filter(d -> d.getAno().equals(ano))
-                                    .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
-                                    .findFirst());
+                                     .flatMap(lista -> lista.stream()
+                                     .filter(d -> d.getAno().equals(ano))
+                                     .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
+                                     .findFirst());
 
-            linha.append(titulo.getSNV() + ",");
-            linha.append(titulo.getVersao() + ",");
-            linha.append(titulo.getSentido() + ",");
-            linha.append(titulo.getBR() + ",");
-            linha.append(titulo.getUF() + ",");
-            linha.append(titulo.getRegiao() + ",");
+            dados.add(titulo.getSNV());
+            dados.add(titulo.getVersao());
+            dados.add(titulo.getSentido());
+            dados.add(titulo.getBR());
+            dados.add(titulo.getUF());
+            dados.add(titulo.getRegiao());
 
-            linha.append(ano + ",");
+            dados.add(ano);
 
-            linha.append(par.getRodovia() + ",");
-            linha.append(par.getKmInicial() + ",");
-            linha.append(par.getKmFinal() + ",");
-            linha.append(par.getExtensao() + ",");
-            linha.append(par.getVDM() + ",");
-            linha.append(par.getNanoUSACE() + ",");
-            linha.append(par.getNanoAASHTO() + ",");
-            linha.append(par.getNanoCCP() + ",");
-            linha.append(par.getIRI() + ",");
-            linha.append(par.getPSI() + ",");
-            linha.append(par.getIGG() + ",");
-            linha.append(par.getSCI() + ",");
-            linha.append(par.getATR() + ",");
-            linha.append(par.getTR() + ",");
-            linha.append(par.getICS() + ",");
-            linha.append(par.getConceitoICS() + ",");
+            dados.add(par.getRodovia());
+            dados.add(par.getKmInicial());
+            dados.add(par.getKmFinal());
+            dados.add(par.getExtensao());
+            dados.add(par.getVDM());
+            dados.add(par.getNanoUSACE());
+            dados.add(par.getNanoAASHTO());
+            dados.add(par.getNanoCCP());
+            dados.add(par.getIRI());
+            dados.add(par.getPSI());
+            dados.add(par.getIGG());
+            dados.add(par.getSCI());
+            dados.add(par.getATR());
+            dados.add(par.getTR());
+            dados.add(par.getICS());
+            dados.add(par.getConceitoICS());
 
-            linha.append(par.getIdade() + ",");
-            linha.append(par.getVR() + ",");
-            linha.append(par.getSnCalibracao() + ",");
-            linha.append(par.getMrCalibracao() + ",");
-            linha.append(par.getQI0() + ",");
-            linha.append(par.getE1() + ",");
-            linha.append(par.getE2() + ",");
-            linha.append(par.getE3() + ",");
-            linha.append(par.getEsl() + ",");
+            dados.add(par.getIdade());
+            dados.add(par.getVR());
+            dados.add(par.getSnCalibracao());
+            dados.add(par.getMrCalibracao());
+            dados.add(par.getQI0());
+            dados.add(par.getE1());
+            dados.add(par.getE2());
+            dados.add(par.getE3());
+            dados.add(par.getEsl());
 
-            linha.append(par.getD0f() + ",");
-            linha.append(par.getSnef() + ",");
-            linha.append(par.getRc() + ",");
-            linha.append(par.getJdr() + ",");
-            linha.append(par.getEccp() + ",");
-            linha.append(par.getKef() + ",");
+            dados.add(par.getD0f());
+            dados.add(par.getSnef());
+            dados.add(par.getRc());
+            dados.add(par.getJdr());
+            dados.add(par.getEccp());
+            dados.add(par.getKef());
 
-            linha.append(par.getH1() + ",");
-            linha.append(par.getH2() + ",");
-            linha.append(par.getH3() + ",");
+            dados.add(par.getH1());
+            dados.add(par.getH2());
+            dados.add(par.getH3());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getAcostLE());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getAcostLE()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHracLE());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHracLE()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHcLE());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHcLE()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getAcostLE());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getAcostLE()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getFaixa1());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getFaixa1()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHc1());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHc1()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHr1());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHr1()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getFaixa2());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getFaixa2()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHc2());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHc2()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHr2());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHr2()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getFaixa3());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getFaixa3()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHc3());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHc3()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHr3());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHr3()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getFaixa4());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getFaixa4()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHc4());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHc4()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHr4());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHr4()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getAcostLD());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getAcostLD()),
+                                     () -> dados.isNull());
 
-            if (optPPIano != null && optPPIano.isPresent())
-                linha.append(optPPIano.get().getHracLD());
-            linha.append(",");
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHracLD()),
+                                     () -> dados.isNull());
 
-            if (optQTpista != null && optQTpista.isPresent())
-                linha.append(optQTpista.get().getCustoPista());
-            linha.append(",");
+            optQTpista.ifPresentOrElse(p -> dados.add(p.getCustoPista()),
+                                     () -> dados.isNull());
 
-            if (optQTacost != null && optQTacost.isPresent())
-                linha.append(optQTacost.get().getCustoAcost());
-            linha.append(",");
+            optQTacost.ifPresentOrElse(p -> dados.add(p.getCustoAcost()),
+                                     () -> dados.isNull());
 
-            linha.append(par.getExtensao() * 33420.59);
+            dados.add(par.getCustoTotal());
 
-            linha.append("\n");
+            dados.pulaLinha();
         }
-        this.line = linha.toString();
+    }
+
+
+    @Override
+    public String getConsolidacao() {
+        return dados.getTodasLinhas();
     }
 
 

@@ -100,48 +100,9 @@ public class EstratDadosPar {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public Double getCustoTotal() {
+        return extensao * 33420.59;
+    }
 
     public Double getICS() {
         return Math.min(getICS_IRI(), getICS_IGG());
