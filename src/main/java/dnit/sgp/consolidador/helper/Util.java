@@ -1,9 +1,7 @@
 package dnit.sgp.consolidador.helper;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 public class Util {
@@ -15,14 +13,6 @@ public class Util {
 
     public static boolean valorEhProximo(double v1, double v2) {
         return Math.abs(v1 - v2) < 0.05;
-    }
-
-
-    public static void removeArquivosComString(String name, List<Path> lista) {
-        if (lista != null && lista.size() > 0)
-            lista = lista.stream()
-                         .filter(f -> !f.getFileName().toString().toUpperCase().contains(name.toUpperCase()))
-                         .collect(Collectors.toList());
     }
 
 

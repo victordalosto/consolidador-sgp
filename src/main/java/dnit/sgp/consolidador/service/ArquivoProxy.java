@@ -64,7 +64,7 @@ public class ArquivoProxy {
                 break; // Successfully saved the file, exit the loop
             } catch (IOException e) {
                 attempts++;
-                println("Não foi possível salvar o consolidador (" + attempts + "ª tentativa): " + e.getMessage());
+                println("Nao foi possivel salvar o consolidador (" + attempts + "ª tentativa): " + e.getMessage());
                 // Modify the file name for the next attempt
                 String fileNameWithoutExtension = originalFileName.replace(".csv", "");
                 originalFileName = fileNameWithoutExtension + "_" + attempts + ".csv";

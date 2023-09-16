@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 
@@ -44,6 +45,18 @@ public class ArquivoService {
                     .stream()
                     .filter(p -> p.toUpperCase().contains(index.toUpperCase()))
                     .toList();
+    }
+
+
+
+
+    public List<Path> removeArquivosComString(String name, List<Path> lista) {
+        if (lista == null || lista.size() == 0) {
+            return lista;
+        }
+            return lista.stream()
+                        .filter(f -> !f.getFileName().toString().toUpperCase().contains(name.toUpperCase()))
+                        .collect(Collectors.toList());
     }
 
 

@@ -2,7 +2,6 @@ package dnit.sgp.consolidador;
 import static dnit.sgp.consolidador.helper.Util.contemNoNome;
 import static dnit.sgp.consolidador.helper.Util.print;
 import static dnit.sgp.consolidador.helper.Util.println;
-import static dnit.sgp.consolidador.helper.Util.removeArquivosComString;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,7 +75,7 @@ public class Main {
 
     private static void consolidaPAR() throws IOException {
         StringBuffer linhas = new StringBuffer();
-        linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Rodovia,Inicio (km),Final (km),Extensao (km),TipoPav,VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),FC2 (%),FC3 (%),TR (%),AP (%),ICS,Conceito ICS,Idade,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),VR (anos),Critério_VR,CamadaCrítica,Diagnostico,Medida,Tipo_ConservaPesada,hc (cm),HR (cm),Dp (0.01 mm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,VR_Fx1,VR_Fx2,VR_Fx3,VR_Fx4" + "\n");
+        linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Rodovia,Inicio (km),Final (km),Extensao (km),TipoPav,VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),FC2 (%),FC3 (%),TR (%),AP (%),ICS,Conceito ICS,Idade,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),VR (anos),Criterio_VR,CamadaCritica,Diagnostico,Medida,Tipo_ConservaPesada,hc (cm),HR (cm),Dp (0.01 mm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,VR_Fx1,VR_Fx2,VR_Fx3,VR_Fx4" + "\n");
 
         var arquivoNec = arquivoService.getUnicoArquivoPeloNome("Nec.csv", "Calc");
         var arquivosPar = arquivoService.getListArquivosPeloNome("PAR_", "Dados");
@@ -89,11 +88,12 @@ public class Main {
             var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
 
             var arquivoParamPar = arquivoService.getListArquivosPeloNome(key, "Calc/Params");
-            removeArquivosComString("_FX1", arquivoParamPar);
+            arquivoParamPar = arquivoService.removeArquivosComString("_FX1", arquivoParamPar);
             var dadosParamPar = ParamsPar.CreateListComDadosDeDentroDoParampar(arquivoParamPar);
 
             var arquivoProjeto = arquivoService.getListArquivosPeloNome(key, "Calc/Projeto/Params");
-            removeArquivosComString("_FX1", arquivoProjeto);
+            arquivoProjeto = arquivoService.removeArquivosComString("_FX1", arquivoProjeto);
+            arquivoProjeto = arquivoService.removeArquivosComString("CALIB", arquivoProjeto);
             var dadosProjeto = ProjetoParam.CreateListComDadosDeDentroDoPar(arquivoProjeto);
 
             var dadosNec = arquivoService.getDadosDentroDoArquivoPeloIndex(key, arquivoNec);
@@ -135,7 +135,7 @@ public class Main {
             println(" ..Rodando Estrategia: " + i);
             linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Ano,Rodovia,Inicio (km),Final (km),Extensao (km),VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),TR (%),ICS,Conceito ICS,Idade,VR(anos),SN calibracao, MR calibracao, QI0,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,Custo_Pista,Custo_Acost.,Custo_CR" + "\n");
 
-            removeArquivosComString("_FX1", arquivosPar);
+            arquivosPar = arquivoService.removeArquivosComString("_FX1", arquivosPar);
             arquivosPar = arquivosPar.stream().filter(p -> contemNoNome(p, "ano ")).collect(Collectors.toList());
 
             for (var arquivoPar : arquivosPar) {

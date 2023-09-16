@@ -7,7 +7,7 @@ public class DadosHelper {
         if (txt == null || txt.isEmpty()) {
             return 0.0;
         }
-        txt = txt.replaceAll(",", ".").replaceAll("[^0-9.]", "");
+        txt = txt.replaceAll(",", ".").replaceAll("A-Za-z", "").replaceAll("\\s+", "");
         if (txt.isEmpty())
             return 0.0;
         return Double.parseDouble(txt);
