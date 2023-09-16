@@ -4,6 +4,19 @@
 @echo off
 setlocal
 
+set config_file=%.\consolidador\configuracoes.properties%
+
+
+:: Delete the existing config if it exists
+if exist "%config_file=%" (
+    del config_file=%"
+)
+
+:: Copy the configuration properties
+copy /y ".\consolidador\configuracoes.properties" ".\build\configuracoes.properties" > nul
+
+
+
 cd build
 
 :: Set the paths to the Java executable and the JAR file
