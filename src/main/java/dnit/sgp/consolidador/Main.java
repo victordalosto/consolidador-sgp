@@ -31,7 +31,7 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        println("-- CONSOLIDADOR V0.2 --");
+        println("-- CONSOLIDADOR V1.0 --");
         print("\n Bootstrap.. ");
         bootStrap();
         println("ok");
@@ -55,9 +55,7 @@ public class Main {
         } else {
             println(" ignorado");
         }
-
         println("\n\n -- FIM --");
-
     }
 
 
@@ -172,7 +170,6 @@ public class Main {
                                                         .findFirst();
                     if (arquivoQTpista.isPresent()) {
                         dadoQTpista = QTpista.CreateListComDadosDeDentroDoQTpista(arquivoQTpista.get());
-
                     }
                 }
 
