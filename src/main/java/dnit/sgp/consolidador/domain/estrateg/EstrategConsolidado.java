@@ -32,8 +32,6 @@ public class EstrategConsolidado {
             var key = par.getKey();
             var kmInicial = par.getKmInicial();
 
-            dadosPPIano.forEach(p -> System.out.println(p.getKey() + " - " + key + " = " + p.getKey().equals(key)));
-
             var optPPIano = Optional.ofNullable(dadosPPIano)
                                     .flatMap(lista -> lista.stream()
                                     .filter(d -> d.getKey().equals(key))
