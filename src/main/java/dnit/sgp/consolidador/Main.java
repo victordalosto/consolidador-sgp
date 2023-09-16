@@ -37,22 +37,27 @@ public class Main {
         bootStrap();
         println("ok");
 
-        println("\n Consolidando Dados.. ");
+        print("\n Consolidando Dados.. ");
         if ("true".equals(props.getParam("consolidar_dados"))) {
+            println("");
             consolidaPAR();
             println("Consolidando Dados.. ok");
         } else {
             println(" ignorado");
         }
 
+        arquivoProxy.clearCache();
 
-        println("\n Consolidando Estrat.. ");
+        print("\n Consolidando Estrat.. ");
         if ("true".equals(props.getParam("consolidar_estrat"))) {
+            println("");
             consolidarEstra();
             println("Consolidando Estrat.. ok");
         } else {
             println(" ignorado");
         }
+
+        println("\n\n -- FIM --");
 
     }
 
@@ -84,11 +89,11 @@ public class Main {
             var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
 
             var arquivoParamPar = arquivoService.getListArquivosPeloNome(key, "Calc/Params");
-            arquivoParamPar = removeArquivosComString("_FX1", arquivoParamPar);
+            removeArquivosComString("_FX1", arquivoParamPar);
             var dadosParamPar = ParamsPar.CreateListComDadosDeDentroDoParampar(arquivoParamPar);
 
             var arquivoProjeto = arquivoService.getListArquivosPeloNome(key, "Calc/Projeto/Params");
-            arquivoProjeto = removeArquivosComString("_FX1", arquivoProjeto);
+            removeArquivosComString("_FX1", arquivoProjeto);
             var dadosProjeto = ProjetoParam.CreateListComDadosDeDentroDoPar(arquivoProjeto);
 
             var dadosNec = arquivoService.getDadosDentroDoArquivoPeloIndex(key, arquivoNec);
@@ -130,7 +135,7 @@ public class Main {
             println(" ..Rodando Estrategia: " + i);
             linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Ano,Rodovia,Inicio (km),Final (km),Extensao (km),VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),TR (%),ICS,Conceito ICS,Idade,VR(anos),SN calibracao, MR calibracao, QI0,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,Custo_Pista,Custo_Acost.,Custo_CR" + "\n");
 
-            arquivosPar = removeArquivosComString("_FX1", arquivosPar);
+            removeArquivosComString("_FX1", arquivosPar);
             arquivosPar = arquivosPar.stream().filter(p -> contemNoNome(p, "ano ")).collect(Collectors.toList());
 
             for (var arquivoPar : arquivosPar) {
@@ -141,7 +146,7 @@ public class Main {
 
                 Titulo titulo = new Titulo(arquivoPar.getFileName().toString(), props);
                 String key = titulo.getSNV() + "_" + titulo.getSentido();
-                println(" ....Dado: " + titulo.getSNV() + ", Ano: " + ano);
+                println(" ....Estrategia: " + i + ", Dado: " + titulo.getSNV() + ", Ano: " + ano);
 
                 List<EstratDadosPar> dadosPar = null;
                 List<PPIAno> dadoPPIano = null;
@@ -191,6 +196,7 @@ public class Main {
                 linhas.append(modelo.getLine());
             }
             arquivoService.salvaArquivo("Consolidado-Estrat-" + i, linhas);
+            System.out.println(" ..Estrategia: " + i + " ok");
         }
     }
 

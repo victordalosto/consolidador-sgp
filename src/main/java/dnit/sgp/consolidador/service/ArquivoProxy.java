@@ -1,4 +1,5 @@
 package dnit.sgp.consolidador.service;
+import static dnit.sgp.consolidador.helper.Util.println;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -35,6 +36,10 @@ public class ArquivoProxy {
         return filesCache.get(directory);
     }
 
+    public void clearCache() {
+        filesCache.clear();
+    }
+
 
 
     public void salvaArquivo(String nome, StringBuffer sb) {
@@ -53,13 +58,13 @@ public class ArquivoProxy {
                 }
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    System.out.println("Salvando arquivo: " + file.getAbsolutePath());
+                    println("..Salvando arquivo: " + file.getAbsolutePath());
                     writer.write(sb.toString());
                 }
                 break; // Successfully saved the file, exit the loop
             } catch (IOException e) {
                 attempts++;
-                System.err.println("Não foi possível salvar o consolidador (" + attempts + "ª tentativa): " + e.getMessage());
+                println("Não foi possível salvar o consolidador (" + attempts + "ª tentativa): " + e.getMessage());
                 // Modify the file name for the next attempt
                 String fileNameWithoutExtension = originalFileName.replace(".csv", "");
                 originalFileName = fileNameWithoutExtension + "_" + attempts + ".csv";

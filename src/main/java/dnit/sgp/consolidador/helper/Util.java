@@ -27,12 +27,11 @@ public class Util {
     }
 
 
-    public static List<Path> removeArquivosComString(String name, List<Path> lista) {
-        if (lista == null || lista.size() == 0)
-            return lista;
-        return lista.stream()
-                    .filter(f -> !f.getFileName().toString().toUpperCase().contains(name.toUpperCase()))
-                    .collect(Collectors.toList());
+    public static void removeArquivosComString(String name, List<Path> lista) {
+        if (lista != null && lista.size() > 0)
+            lista = lista.stream()
+                         .filter(f -> !f.getFileName().toString().toUpperCase().contains(name.toUpperCase()))
+                         .collect(Collectors.toList());
     }
 
 
