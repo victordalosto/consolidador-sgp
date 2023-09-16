@@ -153,9 +153,6 @@ public class ModeloConsolidado implements Consolidador {
             optNec.ifPresentOrElse(p -> dados.add(p.getHracLE()),
                                   () -> dados.isNull());
 
-            optNec.ifPresentOrElse(p -> dados.add(p.getHracLE()),
-                                  () -> dados.isNull());
-
             optNec.ifPresentOrElse(p -> dados.add(p.getHcLE()),
                                   () -> dados.isNull());
 
@@ -201,7 +198,7 @@ public class ModeloConsolidado implements Consolidador {
             optNec.ifPresentOrElse(p -> dados.add(p.getHracLD()),
                                   () -> dados.isNull());
 
-            optNec.ifPresentOrElse(p -> dados.add(p.getHracLD()),
+            optNec.ifPresentOrElse(p -> dados.add(p.getHcLD()),
                                   () -> dados.isNull());
 
             optNec.ifPresentOrElse(p -> dados.add(p.getVRfx1()),

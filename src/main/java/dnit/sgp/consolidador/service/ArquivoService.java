@@ -49,7 +49,6 @@ public class ArquivoService {
 
 
 
-
     public List<Path> removeArquivosComString(String name, List<Path> lista) {
         if (lista == null || lista.size() == 0) {
             return lista;
