@@ -13,6 +13,7 @@ public class Titulo {
     private String BR;
     private String UF;
     private String regiao;
+    private String key;
 
 
     public Titulo(String fileName, PropertiesService props) throws IOException {

@@ -70,7 +70,7 @@ public class Main {
 
     private static void consolidaPAR() throws IOException {
         StringBuffer linhas = new StringBuffer();
-        linhas.append("SNV;Versao do SNV;Sentido;BR;UF;Regiao;Rodovia;Inicio (km);Final (km);Extensao (km);TipoPav;VDM;NanoUSACE;NanoAASHTO;NanoCCP;IRI (m/km);PSI;IGG;SCI;ATR (mm);FC2 (%);FC3 (%);TR (%);AP (%);ICS;Conceito ICS;Idade;E1;E2;E3;Esl;D0ref;SNef;Rc;JDR;Eccp;Kef;H1 (cm);H2 (cm);H3 (cm);VR (anos);Critério_VR;CamadaCrítica;Diagnostico;Medida;Tipo_ConservaPesada;hc (cm);HR (cm);Dp (0.01 mm);AcostLE;HRacLE;hcLE;Faixa1;hc1;HR1;Faixa2;hc2;HR2;Faixa3;hc3;HR3;Faixa4;hc4;HR4;AcostLD;HRacLD;hcLD;VR_Fx1;VR_Fx2;VR_Fx3;VR_Fx4" + "\n");
+        linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Rodovia,Inicio (km),Final (km),Extensao (km),TipoPav,VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),FC2 (%),FC3 (%),TR (%),AP (%),ICS,Conceito ICS,Idade,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),VR (anos),Critério_VR,CamadaCrítica,Diagnostico,Medida,Tipo_ConservaPesada,hc (cm),HR (cm),Dp (0.01 mm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,VR_Fx1,VR_Fx2,VR_Fx3,VR_Fx4" + "\n");
 
         var arquivoNec = arquivoService.getArquivoWithName("Nec.csv", "Calc");
         var arquivosPar = arquivoService.getListArquivosWithName("PAR_", "Dados");
@@ -81,25 +81,17 @@ public class Main {
 
             String key = titulo.getSNV() + "_" + titulo.getSentido();
             var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
-            if (dadosPar != null)
-                dadosPar.forEach(p -> p.setKey(key));
 
             var arquivoParamPar = arquivoService.getListArquivosWithName(key, "Calc/Params");
             arquivoParamPar = removeArquivosComString("_FX1", arquivoParamPar);
             var dadosParamPar = ParamsPar.CreateListComDadosDeDentroDoParampar(arquivoParamPar);
-            if (dadosParamPar != null)
-                dadosParamPar.forEach(p -> p.setKey(key));
 
             var arquivoProjeto = arquivoService.getListArquivosWithName(key, "Calc/Projeto/Params");
             arquivoProjeto = removeArquivosComString("_FX1", arquivoProjeto);
             var dadosProjeto = ProjetoParam.CreateListComDadosDeDentroDoPar(arquivoProjeto);
-            if (dadosProjeto != null)
-                dadosProjeto.forEach(p -> p.setKey(key));
 
             var dadosNec = arquivoService.buscaDadosNoArquivo(key, arquivoNec);
             var nec = Nec.createListComDadosDentroDoNec(dadosNec);
-            if (nec != null)
-                nec.forEach(p -> p.setKey(key));
 
             var modelo = new ModeloConsolidado(
                                             titulo,
@@ -122,9 +114,11 @@ public class Main {
     private static void consolidarEstra() throws IOException {
 
         for (int i = 0; i <= 10; i++) {
-            var pastaEstrat = "Calc/Estrat_" + i;
-            println(" ..Rodando: " + pastaEstrat);
+            StringBuffer linhas = new StringBuffer();
+            linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Ano,Rodovia,Inicio (km),Final (km),Extensao (km),VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),TR (%),ICS,Conceito ICS,Idade,VR(anos),SN calibracao, MR calibracao, QI0,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,Custo_Pista,Custo_Acost.,Custo_CR" + "\n");
+            println(" ..Rodando Estrategia: " + i);
 
+            var pastaEstrat = "Calc/Estrat_" + i;
             var arquivosPar = arquivoService.getListArquivosWithName("PAR_", pastaEstrat + "/Params");
             var arquivosPPIano = arquivoService.getListArquivosWithName("PPI_Ano", pastaEstrat);
             var arquivosQTpista = arquivoService.getListArquivosWithName("QTpista_", pastaEstrat);
@@ -135,16 +129,16 @@ public class Main {
             }
 
             arquivosPar = removeArquivosComString("_FX1", arquivosPar);
-            arquivosPar = arquivosPar.stream()
-                                     .filter(p -> contemNoNome(p, "ano "))
-                                     .collect(Collectors.toList());
+            arquivosPar = arquivosPar.stream().filter(p -> contemNoNome(p, "ano ")).collect(Collectors.toList());
 
             for (var arquivoPar : arquivosPar) {
                 String ano = Util.getAnoInString(arquivoPar);
                 if (ano.isEmpty()) {
                     continue;
                 }
+
                 Titulo titulo = new Titulo(arquivoPar.getFileName().toString(), props);
+                String key = titulo.getSNV() + "_" + titulo.getSentido();
                 println(" ....Dado: " + titulo.getSNV() + ", Ano: " + ano);
 
                 List<EstratDadosPar> dadosPar = null;
@@ -153,12 +147,14 @@ public class Main {
                 List<QTacost> dadoQTacost = null;
 
                 dadosPar = EstratDadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
-                dadosPar.stream().forEach(par -> par.setAno(ano));
+                dadosPar.stream().forEach(par ->  {
+                    par.setAno(ano);
+                    par.setKey(key);
+                });
 
                 var arquivoPPIano = arquivosPPIano.stream()
                                    .filter(p -> contemNoNome(p, "ppi_ano " + ano + ".csv"))
                                    .findFirst();
-
                 if (arquivoPPIano.isPresent()) {
                     dadoPPIano = PPIAno.CreateListComDadosDeDentroDoPPIano(arquivoPPIano.get());
                 }
@@ -190,13 +186,12 @@ public class Main {
                     dadoQTacost
                 );
 
-
-            }
-
-
+            linhas.append(modelo.getLine());
 
         }
+        File file = Paths.get(diretorioRaiz, "Resultados", "Consolidado-Estrat-"+i+".csv").toFile();
+        arquivoService.salvaArquivo(linhas, file);
     }
-
+}
 
 }

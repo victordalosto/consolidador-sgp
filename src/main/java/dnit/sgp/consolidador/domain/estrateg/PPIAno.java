@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class PPIAno {
 
+    private String key;
     private String ano;
     private Double kmInicial;
     private Double kmFinal;
@@ -37,6 +38,7 @@ public class PPIAno {
     public PPIAno(String linha) {
         var dados = linha.split(",");
         this.ano = dados[0];
+        this.key = dados[1];
         this.kmInicial = Util.converteDouble(dados[3]);
         this.kmFinal = Util.converteDouble(dados[4]);
         this.acostLE = dados[5];

@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class DadosPar {
 
-    private String key;
     private Double kmInicial;
     private Double kmFinal;
     private String rodovia;

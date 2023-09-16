@@ -76,7 +76,6 @@ public class ArquivoService {
         if (file.exists())
             file.delete();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            System.out.println(" ..Salvando arquivo em: " + file);
             writer.write(sb.toString());
         } catch (IOException e) {
             System.err.println("Não foi possivel salvar o consolidador: " + e.getMessage());

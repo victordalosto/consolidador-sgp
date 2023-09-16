@@ -11,7 +11,6 @@ import lombok.Data;
 @Data
 public class ProjetoParam {
 
-    private String key;
     private Double kmInicial;
     private Double kmFinal;
     private Double VR;
