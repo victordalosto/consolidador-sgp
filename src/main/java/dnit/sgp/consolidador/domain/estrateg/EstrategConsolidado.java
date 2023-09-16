@@ -26,7 +26,6 @@ public class EstrategConsolidado implements Consolidador {
     {
 
         for (int i=0; i<dadosPar.size(); i++) {
-
             var par = dadosPar.get(i);
             var ano = par.getAno();
             var key = par.getKey();
@@ -106,9 +105,6 @@ public class EstrategConsolidado implements Consolidador {
             optPPIano.ifPresentOrElse(p -> dados.add(p.getHcLE()),
                                      () -> dados.isNull());
 
-            optPPIano.ifPresentOrElse(p -> dados.add(p.getAcostLE()),
-                                     () -> dados.isNull());
-
             optPPIano.ifPresentOrElse(p -> dados.add(p.getFaixa1()),
                                      () -> dados.isNull());
 
@@ -149,6 +145,9 @@ public class EstrategConsolidado implements Consolidador {
                                      () -> dados.isNull());
 
             optPPIano.ifPresentOrElse(p -> dados.add(p.getHracLD()),
+                                     () -> dados.isNull());
+
+            optPPIano.ifPresentOrElse(p -> dados.add(p.getHcLD()),
                                      () -> dados.isNull());
 
             optQTpista.ifPresentOrElse(p -> dados.add(p.getCustoPista()),

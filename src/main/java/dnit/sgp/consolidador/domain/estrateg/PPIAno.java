@@ -38,7 +38,7 @@ public class PPIAno {
     public PPIAno(String linha) {
         var dados = linha.split(",");
         this.ano = dados[0];
-        this.key = dados[1];
+        this.key = dados[1].replaceAll("\"", "");
         this.kmInicial = DadosHelper.converteDouble(dados[3]);
         this.kmFinal = DadosHelper.converteDouble(dados[4]);
         this.acostLE = dados[5];
