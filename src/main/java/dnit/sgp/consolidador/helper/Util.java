@@ -11,15 +11,6 @@ public class Util {
 
     private static final Pattern pattern = Pattern.compile(".*ano (\\d+).*csv.*");
 
-    public static Double converteDouble(String txt) {
-        if (txt == null || txt.isEmpty()) {
-            return 0.0;
-        }
-        txt = txt.replaceAll(",", ".").replaceAll("\"\"", "").replaceAll("\\s+", "");
-        if (txt.isEmpty())
-            return 0.0;
-        return Double.parseDouble(txt);
-    }
 
 
     public static boolean valorEhProximo(double v1, double v2) {

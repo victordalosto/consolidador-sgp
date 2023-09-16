@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -27,17 +27,17 @@ public class ProjetoParam {
 
     public ProjetoParam(String linhaArquivoParamsPar) {
         String[] split = linhaArquivoParamsPar.replaceAll(", ", ". ").split(",");
-        this.kmInicial = Util.converteDouble(split[2]);
-        this.kmFinal = Util.converteDouble(split[3]);
-        this.VR = Util.converteDouble(split[7]);
+        this.kmInicial = DadosHelper.converteDouble(split[2]);
+        this.kmFinal = DadosHelper.converteDouble(split[3]);
+        this.VR = DadosHelper.converteDouble(split[7]);
         this.criterioVR = split[8];
         this.camadaCritica = split[9];
         this.diagnostico = split[10];
         this.medida = split[12];
         this.tipoCP = split[13];
-        this.hc = Util.converteDouble(split[14]);
-        this.hr = Util.converteDouble(split[15]);
-        this.dp = Util.converteDouble(split[16]);
+        this.hc = DadosHelper.converteDouble(split[14]);
+        this.hr = DadosHelper.converteDouble(split[15]);
+        this.dp = DadosHelper.converteDouble(split[16]);
     }
 
 

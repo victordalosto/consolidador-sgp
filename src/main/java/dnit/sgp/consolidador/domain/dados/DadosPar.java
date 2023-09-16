@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -30,19 +30,19 @@ public class DadosPar {
     public DadosPar(String linhaArquivoPar) {
         var dados = linhaArquivoPar.split(",");
         this.rodovia = dados[0];
-        this.kmInicial = Util.converteDouble(dados[1]);
-        this.kmFinal = Util.converteDouble(dados[2]);
+        this.kmInicial = DadosHelper.converteDouble(dados[1]);
+        this.kmFinal = DadosHelper.converteDouble(dados[2]);
         this.extensao = Math.abs(kmFinal - kmInicial);
-        this.VDM = Util.converteDouble(dados[3]);
-        this.nanoUSACE = Util.converteDouble(dados[4]);
-        this.nanoAASHTO = Util.converteDouble(dados[5]);
-        this.nanoCCP = Util.converteDouble(dados[6]);
-        this.IRI = Util.converteDouble(dados[7]);
-        this.IGG = Util.converteDouble(dados[8]);
-        this.ATR = Util.converteDouble(dados[9]);
-        this.FC2 = Util.converteDouble(dados[10]);
-        this.FC3 = Util.converteDouble(dados[11]);
-        this.AP = Util.converteDouble(dados[12]);
+        this.VDM = DadosHelper.converteDouble(dados[3]);
+        this.nanoUSACE = DadosHelper.converteDouble(dados[4]);
+        this.nanoAASHTO = DadosHelper.converteDouble(dados[5]);
+        this.nanoCCP = DadosHelper.converteDouble(dados[6]);
+        this.IRI = DadosHelper.converteDouble(dados[7]);
+        this.IGG = DadosHelper.converteDouble(dados[8]);
+        this.ATR = DadosHelper.converteDouble(dados[9]);
+        this.FC2 = DadosHelper.converteDouble(dados[10]);
+        this.FC3 = DadosHelper.converteDouble(dados[11]);
+        this.AP = DadosHelper.converteDouble(dados[12]);
     }
 
 
@@ -99,6 +99,21 @@ public class DadosPar {
         if (IGG > 20)
             return 4.0;
         return 5.0;
+    }
+
+
+    public Double getPSI() {
+        return 5*Math.exp(-(IRI*13.0)/71.5);
+    }
+
+
+    public double getSCI() {
+        return (309.22-(0.616*IGG))/(61.844+IGG);
+    }
+
+
+    public double getTR() {
+        return Math.min(FC2 + FC3, 100);
     }
 
 

@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -52,37 +52,37 @@ public class EstratDadosPar {
     public EstratDadosPar(String linhaArquivoPar) {
         var dados = linhaArquivoPar.split(",");
         this.rodovia = dados[0];
-        this.kmInicial = Util.converteDouble(dados[1]);
-        this.kmFinal = Util.converteDouble(dados[2]);
+        this.kmInicial = DadosHelper.converteDouble(dados[1]);
+        this.kmFinal = DadosHelper.converteDouble(dados[2]);
         this.extensao = Math.abs(kmFinal - kmInicial);
-        this.VDM = Util.converteDouble(dados[4]);
-        this.nanoUSACE = Util.converteDouble(dados[5]);
-        this.nanoAASHTO = Util.converteDouble(dados[6]);
-        this.nanoCCP = Util.converteDouble(dados[7]);
-        this.PSI = Util.converteDouble(dados[8]);
-        this.SCI = Util.converteDouble(dados[9]);
+        this.VDM = DadosHelper.converteDouble(dados[4]);
+        this.nanoUSACE = DadosHelper.converteDouble(dados[5]);
+        this.nanoAASHTO = DadosHelper.converteDouble(dados[6]);
+        this.nanoCCP = DadosHelper.converteDouble(dados[7]);
+        this.PSI = DadosHelper.converteDouble(dados[8]);
+        this.SCI = DadosHelper.converteDouble(dados[9]);
         this.IRI = -71.5/13*Math.log(PSI/5);
         this.IGG = (309.22-61.844*SCI)/(0.616+SCI);
-        this.ATR = Util.converteDouble(dados[10]);
-        this.TR = Util.converteDouble(dados[11]);
-        this.idade = Util.converteDouble(dados[12]);
-        this.VR = Util.converteDouble(dados[13]);
-        this.snCalibracao = Util.converteDouble(dados[21]);
-        this.mrCalibracao = Util.converteDouble(dados[22]);
-        this.QI0 = Util.converteDouble(dados[23]);
-        this.e1 = Util.converteDouble(dados[24]);
-        this.e2 = Util.converteDouble(dados[25]);
-        this.e3 = Util.converteDouble(dados[26]);
-        this.esl = Util.converteDouble(dados[27]);
-        this.d0f = Util.converteDouble(dados[28]);
-        this.snef = Util.converteDouble(dados[29]);
-        this.rc = Util.converteDouble(dados[30]);
-        this.jdr = Util.converteDouble(dados[31]);
-        this.eccp = Util.converteDouble(dados[32]);
-        this.kef = Util.converteDouble(dados[33]);
-        this.h1 = Util.converteDouble(dados[34]);
-        this.h2 = Util.converteDouble(dados[35]);
-        this.h3 = Util.converteDouble(dados[36]);
+        this.ATR = DadosHelper.converteDouble(dados[10]);
+        this.TR = DadosHelper.converteDouble(dados[11]);
+        this.idade = DadosHelper.converteDouble(dados[12]);
+        this.VR = DadosHelper.converteDouble(dados[13]);
+        this.snCalibracao = DadosHelper.converteDouble(dados[21]);
+        this.mrCalibracao = DadosHelper.converteDouble(dados[22]);
+        this.QI0 = DadosHelper.converteDouble(dados[23]);
+        this.e1 = DadosHelper.converteDouble(dados[24]);
+        this.e2 = DadosHelper.converteDouble(dados[25]);
+        this.e3 = DadosHelper.converteDouble(dados[26]);
+        this.esl = DadosHelper.converteDouble(dados[27]);
+        this.d0f = DadosHelper.converteDouble(dados[28]);
+        this.snef = DadosHelper.converteDouble(dados[29]);
+        this.rc = DadosHelper.converteDouble(dados[30]);
+        this.jdr = DadosHelper.converteDouble(dados[31]);
+        this.eccp = DadosHelper.converteDouble(dados[32]);
+        this.kef = DadosHelper.converteDouble(dados[33]);
+        this.h1 = DadosHelper.converteDouble(dados[34]);
+        this.h2 = DadosHelper.converteDouble(dados[35]);
+        this.h3 = DadosHelper.converteDouble(dados[36]);
     }
 
 

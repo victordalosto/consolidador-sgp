@@ -2,28 +2,29 @@ package dnit.sgp.consolidador.domain.dados;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import dnit.sgp.consolidador.domain.Consolidador;
 import dnit.sgp.consolidador.domain.Titulo;
 import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.service.DadosService;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 @Data
 @NoArgsConstructor
-public class ModeloConsolidado {
+public class ModeloConsolidado implements Consolidador {
 
-    private String line;
+    private DadosService dados = new DadosService();
 
     public ModeloConsolidado(
-                       Titulo titulo,
-                       List<DadosPar> dadosPar,
-                       List<ParamsPar> dadosParamPar,
-                       List<ProjetoParam> dadosProjeto,
-                       List<Nec> dadosNec
-                       ) throws IOException
+        Titulo titulo,
+        List<DadosPar> dadosPar,
+        List<ParamsPar> dadosParamPar,
+        List<ProjetoParam> dadosProjeto,
+        List<Nec> dadosNec
+        ) throws IOException
     {
 
-        StringBuilder linha = new StringBuilder();
         for (int i=0; i<dadosPar.size(); i++) {
 
             var par = dadosPar.get(i);
@@ -45,222 +46,184 @@ public class ModeloConsolidado {
                                   .filter(d -> Util.valorEhProximo(d.getKmInicial(), kmInicial))
                                   .findFirst());
 
-            linha.append(titulo.getSNV() + ",");
-            linha.append(titulo.getVersao() + ",");
-            linha.append(titulo.getSentido() + ",");
-            linha.append(titulo.getBR() + ",");
-            linha.append(titulo.getUF() + ",");
-            linha.append(titulo.getRegiao() + ",");
+            dados.add(titulo.getSNV());
+            dados.add(titulo.getVersao());
+            dados.add(titulo.getSentido());
+            dados.add(titulo.getBR());
+            dados.add(titulo.getUF());
+            dados.add(titulo.getRegiao());
 
-            linha.append(par.getRodovia() + ",");
-            linha.append(par.getKmInicial() + ",");
-            linha.append(par.getKmFinal() + ",");
-            linha.append(par.getExtensao() + ",");
+            dados.add(par.getRodovia());
+            dados.add(par.getKmInicial());
+            dados.add(par.getKmFinal());
+            dados.add(par.getExtensao());
 
-            if (optParamsPar != null && optParamsPar.isPresent()) {
-                linha.append(optParamsPar.get().getTipoPav());
-            }
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getTipoPav()),
+                                        () -> dados.isNull());
 
-            linha.append(par.getVDM() + ",");
-            linha.append(par.getNanoUSACE() + ",");
-            linha.append(par.getNanoAASHTO() + ",");
-            linha.append(par.getNanoCCP() + ",");
-            linha.append(par.getIRI() + ",");
-            linha.append(5*Math.exp(-(par.getIRI()*13.0)/71.5) + ","); // PSI
-            linha.append(par.getIGG() + ",");
-            linha.append((309.22-(0.616*par.getIGG()))/(61.844+par.getIGG()) + ","); // SCI
-            linha.append(par.getATR() + ",");
-            linha.append(par.getFC2() + ",");
-            linha.append(par.getFC3() + ",");
-            linha.append(Math.min(par.getFC2() + par.getFC3(), 100) + ","); // TR
-            linha.append(par.getAP() + ",");
-            linha.append(par.getICS() + ",");
-            linha.append(par.getConceitoICS() + ",");
+            dados.add(par.getVDM());
+            dados.add(par.getNanoUSACE());
+            dados.add(par.getNanoAASHTO());
+            dados.add(par.getNanoCCP());
+            dados.add(par.getIRI());
+            dados.add(par.getPSI());
+            dados.add(par.getIGG());
+            dados.add(par.getSCI());
+            dados.add(par.getATR());
+            dados.add(par.getFC2());
+            dados.add(par.getFC3());
+            dados.add(par.getTR());
+            dados.add(par.getAP());
+            dados.add(par.getICS());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getIdade());
-            linha.append(",");
+            dados.add(par.getConceitoICS());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getE1());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getIdade()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getE2());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getE1()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getE3());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getE2()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getEsl());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getE3()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getD0ref());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getEsl()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getSnef());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getD0ref()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getRc());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getSnef()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getJdr());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getRc()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getEccp());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getJdr()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getKef());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getEccp()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getH1());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getKef()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getH2());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getH1()),
+                                        () -> dados.isNull());
 
-            if (optParamsPar != null && optParamsPar.isPresent())
-                linha.append(optParamsPar.get().getH3());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getH2()),
+                                        () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getVR());
-            linha.append(",");
+            optParamsPar.ifPresentOrElse(p -> dados.add(p.getH3()),
+                                        () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getCriterioVR());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getVR()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getCamadaCritica());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getCriterioVR()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getDiagnostico());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getCamadaCritica()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getMedida());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getDiagnostico()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getTipoCP());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getMedida()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getHc());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getTipoCP()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getHr());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getHc()),
+                                      () -> dados.isNull());
 
-            if (optProjeto != null && optProjeto.isPresent())
-                linha.append(optProjeto.get().getDp());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getHr()),
+                                      () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getAcostLE());
-            linha.append(",");
+            optProjeto.ifPresentOrElse(p -> dados.add(p.getDp()),
+                                      () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHracLE());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getAcostLE()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHcLE());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHracLE()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getFaixa1());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHracLE()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHc1());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHcLE()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHr1());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getFaixa1()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getFaixa2());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHc1()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHc2());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHr1()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHr2());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getFaixa2()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getFaixa3());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHc2()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHc3());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHr2()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHr3());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getFaixa3()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getFaixa4());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHc3()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHc4());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHr3()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHr4());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getFaixa4()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getAcostLD());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHc4()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHracLD());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHr4()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getHracLD());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getAcostLD()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getVRfx1());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHracLD()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getVRfx2());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getHracLD()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getVRfx3());
-            linha.append(",");
+            optNec.ifPresentOrElse(p -> dados.add(p.getVRfx1()),
+                                  () -> dados.isNull());
 
-            if (optNec != null && optNec.isPresent())
-                linha.append(optNec.get().getVRfx4());
+            optNec.ifPresentOrElse(p -> dados.add(p.getVRfx2()),
+                                  () -> dados.isNull());
 
-            linha.append("\n");
+            optNec.ifPresentOrElse(p -> dados.add(p.getVRfx3()),
+                                  () -> dados.isNull());
+
+            optNec.ifPresentOrElse(p -> dados.add(p.getVRfx4()),
+                                  () -> dados.isNull());
+
+            dados.pulaLinha();
         }
-        this.line = linha.toString();
     }
 
+
+    @Override
+    public String getConsolidacao() {
+        return dados.getTodasLinhas();
+    }
 
 }

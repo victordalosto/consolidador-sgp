@@ -107,7 +107,7 @@ public class Main {
                                             nec
             );
 
-            linhas.append(modelo.getLine());
+            linhas.append(modelo.getConsolidacao());
 
         }
         arquivoService.salvaArquivo("Consolidado-dados", linhas);

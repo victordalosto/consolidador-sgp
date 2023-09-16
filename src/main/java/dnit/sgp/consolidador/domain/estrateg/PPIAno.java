@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -39,26 +39,26 @@ public class PPIAno {
         var dados = linha.split(",");
         this.ano = dados[0];
         this.key = dados[1];
-        this.kmInicial = Util.converteDouble(dados[3]);
-        this.kmFinal = Util.converteDouble(dados[4]);
+        this.kmInicial = DadosHelper.converteDouble(dados[3]);
+        this.kmFinal = DadosHelper.converteDouble(dados[4]);
         this.acostLE = dados[5];
-        this.hracLE = Util.converteDouble(dados[6]);
-        this.hcLE = Util.converteDouble(dados[7]);
+        this.hracLE = DadosHelper.converteDouble(dados[6]);
+        this.hcLE = DadosHelper.converteDouble(dados[7]);
         this.faixa1 = dados[8];
-        this.hc1 = Util.converteDouble(dados[9]);
-        this.hr1 = Util.converteDouble(dados[10]);
+        this.hc1 = DadosHelper.converteDouble(dados[9]);
+        this.hr1 = DadosHelper.converteDouble(dados[10]);
         this.faixa2 = dados[11];
-        this.hc2 = Util.converteDouble(dados[12]);
-        this.hr2 = Util.converteDouble(dados[13]);
+        this.hc2 = DadosHelper.converteDouble(dados[12]);
+        this.hr2 = DadosHelper.converteDouble(dados[13]);
         this.faixa3 = dados[14];
-        this.hc3 = Util.converteDouble(dados[15]);
-        this.hr3 = Util.converteDouble(dados[16]);
+        this.hc3 = DadosHelper.converteDouble(dados[15]);
+        this.hr3 = DadosHelper.converteDouble(dados[16]);
         this.faixa4 = dados[17];
-        this.hc4 = Util.converteDouble(dados[18]);
-        this.hr4 = Util.converteDouble(dados[19]);
+        this.hc4 = DadosHelper.converteDouble(dados[18]);
+        this.hr4 = DadosHelper.converteDouble(dados[19]);
         this.acostLD = dados[20];
-        this.hracLD = Util.converteDouble(dados[21]);
-        this.hcLD = Util.converteDouble(dados[22]);
+        this.hracLD = DadosHelper.converteDouble(dados[21]);
+        this.hcLD = DadosHelper.converteDouble(dados[22]);
     }
 
 

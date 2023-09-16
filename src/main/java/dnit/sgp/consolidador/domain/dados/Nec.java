@@ -1,7 +1,7 @@
 package dnit.sgp.consolidador.domain.dados;
 import java.util.ArrayList;
 import java.util.List;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -36,30 +36,30 @@ public class Nec {
 
     public Nec(String linha) {
         String[] split = linha.split(",");
-        this.kmInicial = Util.converteDouble(split[2]);
-        this.kmFinal = Util.converteDouble(split[3]);
+        this.kmInicial = DadosHelper.converteDouble(split[2]);
+        this.kmFinal = DadosHelper.converteDouble(split[3]);
         this.acostLE = split[4];
-        this.hracLE = Util.converteDouble(split[5]);
-        this.hcLE = Util.converteDouble(split[6]);
+        this.hracLE = DadosHelper.converteDouble(split[5]);
+        this.hcLE = DadosHelper.converteDouble(split[6]);
         this.faixa1 = split[7];
-        this.hc1 = Util.converteDouble(split[8]);
-        this.hr1 = Util.converteDouble(split[9]);
+        this.hc1 = DadosHelper.converteDouble(split[8]);
+        this.hr1 = DadosHelper.converteDouble(split[9]);
         this.faixa2 = split[10];
-        this.hc2 = Util.converteDouble(split[11]);
-        this.hr2 = Util.converteDouble(split[12]);
+        this.hc2 = DadosHelper.converteDouble(split[11]);
+        this.hr2 = DadosHelper.converteDouble(split[12]);
         this.faixa3 = split[13];
-        this.hc3 = Util.converteDouble(split[14]);
-        this.hr3 = Util.converteDouble(split[15]);
+        this.hc3 = DadosHelper.converteDouble(split[14]);
+        this.hr3 = DadosHelper.converteDouble(split[15]);
         this.faixa4 = split[16];
-        this.hc4 = Util.converteDouble(split[17]);
-        this.hr4 = Util.converteDouble(split[18]);
+        this.hc4 = DadosHelper.converteDouble(split[17]);
+        this.hr4 = DadosHelper.converteDouble(split[18]);
         this.acostLD = split[19];
-        this.hracLD = Util.converteDouble(split[20]);
-        this.hcLD = Util.converteDouble(split[21]);
-        this.VRfx1 = Util.converteDouble(split[22]);
-        this.VRfx2 = Util.converteDouble(split[23]);
-        this.VRfx3 = Util.converteDouble(split[24]);
-        this.VRfx4 = Util.converteDouble(split[25]);
+        this.hracLD = DadosHelper.converteDouble(split[20]);
+        this.hcLD = DadosHelper.converteDouble(split[21]);
+        this.VRfx1 = DadosHelper.converteDouble(split[22]);
+        this.VRfx2 = DadosHelper.converteDouble(split[23]);
+        this.VRfx3 = DadosHelper.converteDouble(split[24]);
+        this.VRfx4 = DadosHelper.converteDouble(split[25]);
     }
 
 

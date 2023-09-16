@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -33,22 +33,22 @@ public class ParamsPar {
     public ParamsPar(String linhaArquivoParamsPar) {
         String[] split = linhaArquivoParamsPar.split(",");
         this.tipoPav = split[3];
-        this.kmInicial = Util.converteDouble(split[1]);
-        this.kmFinal = Util.converteDouble(split[2]);
-        this.idade = Util.converteDouble(split[12]);
-        this.E1 = Util.converteDouble(split[14]);
-        this.E2 = Util.converteDouble(split[15]);
-        this.E3 = Util.converteDouble(split[16]);
-        this.Esl = Util.converteDouble(split[17]);
-        this.d0ref = Util.converteDouble(split[18]);
-        this.snef = Util.converteDouble(split[19]);
-        this.rc = Util.converteDouble(split[20]);
-        this.jdr = Util.converteDouble(split[21]);
-        this.eccp = Util.converteDouble(split[22]);
-        this.kef = Util.converteDouble(split[23]);
-        this.h1 = Util.converteDouble(split[24]);
-        this.h2 = Util.converteDouble(split[25]);
-        this.h3 = Util.converteDouble(split[26]);
+        this.kmInicial = DadosHelper.converteDouble(split[1]);
+        this.kmFinal = DadosHelper.converteDouble(split[2]);
+        this.idade = DadosHelper.converteDouble(split[12]);
+        this.E1 = DadosHelper.converteDouble(split[14]);
+        this.E2 = DadosHelper.converteDouble(split[15]);
+        this.E3 = DadosHelper.converteDouble(split[16]);
+        this.Esl = DadosHelper.converteDouble(split[17]);
+        this.d0ref = DadosHelper.converteDouble(split[18]);
+        this.snef = DadosHelper.converteDouble(split[19]);
+        this.rc = DadosHelper.converteDouble(split[20]);
+        this.jdr = DadosHelper.converteDouble(split[21]);
+        this.eccp = DadosHelper.converteDouble(split[22]);
+        this.kef = DadosHelper.converteDouble(split[23]);
+        this.h1 = DadosHelper.converteDouble(split[24]);
+        this.h2 = DadosHelper.converteDouble(split[25]);
+        this.h3 = DadosHelper.converteDouble(split[26]);
     }
 
 

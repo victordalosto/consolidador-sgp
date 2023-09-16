@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import dnit.sgp.consolidador.helper.Util;
+import dnit.sgp.consolidador.helper.DadosHelper;
 import lombok.Data;
 
 
@@ -20,9 +20,9 @@ public class QTpista {
     public QTpista(String linha) {
         var dados = linha.split(",");
         this.ano = dados[0];
-        this.kmInicial = Util.converteDouble(dados[1]);
-        this.kmFinal = Util.converteDouble(dados[2]);
-        this.custoPista = Util.converteDouble(dados[21]);
+        this.kmInicial = DadosHelper.converteDouble(dados[1]);
+        this.kmFinal = DadosHelper.converteDouble(dados[2]);
+        this.custoPista = DadosHelper.converteDouble(dados[21]);
     }
 
 
