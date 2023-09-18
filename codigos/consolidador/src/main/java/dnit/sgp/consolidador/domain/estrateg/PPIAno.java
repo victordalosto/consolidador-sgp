@@ -68,11 +68,17 @@ public class PPIAno {
             scanner.nextLine(); // pula cabecalho do arquivo
             while (scanner.hasNextLine()) {
                 String linha = scanner.nextLine();
-                if (linha.contains("\"\",\"\",\"\",")) {
-                    continue;
-                }
-                if (!linha.isEmpty()) {
-                    dadosPar.add(new PPIAno(linha));
+                try {
+                    if (linha.contains("\"\",\"\",\"\",")) {
+                        continue;
+                    }
+                    if (!linha.isEmpty()) {
+                        dadosPar.add(new PPIAno(linha));
+                    }
+                } catch (Exception e) {
+                    System.out.println("Erro ao ler linha do arquivo: " + arquivo.toAbsolutePath().toString());
+                    System.out.println("Linha com erro: " + linha);
+                    throw new RuntimeException(e);
                 }
             }
             return dadosPar;

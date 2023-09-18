@@ -43,7 +43,6 @@ public class Main {
         bootStrap();
         println("ok");
 
-        executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         print("\n Consolidando Dados.. ");
         if (props.getBooleanParam("consolidar_dados")) {
             println("");
@@ -86,11 +85,13 @@ public class Main {
         var arquivoNec = arquivoService.getUnicoArquivoPeloNome("Nec.csv", "Calc");
         var arquivosPar = arquivoService.getListArquivosPeloNome("PAR_", "Dados");
 
+        executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         for (var arquivoPar : arquivosPar) {
             Runnable task = () -> {
                 try {
                     taskDados(linhas, arquivoNec, arquivoPar);
                 } catch (IOException e) {
+                    println("Erro no arquivo: " + arquivoPar.toAbsolutePath().toString());
                     e.printStackTrace();
                 }
             };
@@ -161,16 +162,17 @@ public class Main {
             arquivosPar = arquivosPar.stream().filter(p -> contemNoNome(p, "ano ")).collect(Collectors.toList());
 
 
-            HashMap<String, List<PPIAno>> mapAnoPPIano = new HashMap<>();
+            var mapAnoPPIano = new HashMap<String, List<PPIAno>>();
 
             if (arquivosPPIano != null) {
-                arquivosPPIano.forEach(p -> {
-                    String ano = Util.getAnoInString(p);
+                arquivosPPIano.forEach(ppiAno -> {
+                    String ano = Util.getAnoInString(ppiAno);
                     List<PPIAno> ppiAnos;
                     try {
-                        ppiAnos = PPIAno.CreateListComDadosDeDentroDoPPIano(p);
+                        ppiAnos = PPIAno.CreateListComDadosDeDentroDoPPIano(ppiAno);
                         mapAnoPPIano.put(ano, ppiAnos);
                     } catch (IOException e) {
+                        println("Erro no arquivo ppiAno: " + ppiAno.toAbsolutePath().toString());
                         e.printStackTrace();
                     }
                 });
@@ -182,6 +184,7 @@ public class Main {
                     try {
                         taskEstrateg(finalI, linhas, mapAnoPPIano, arquivosQTpista, arquivosQTacost, arquivoPar);
                     } catch (IOException e) {
+                        println("Erro no arquivo: " + arquivoPar.toAbsolutePath().toString());
                         e.printStackTrace();
                     }
                 };
