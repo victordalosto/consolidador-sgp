@@ -3,8 +3,12 @@ import static dnit.sgp.consolidador.helper.Util.contemNoNome;
 import static dnit.sgp.consolidador.helper.Util.print;
 import static dnit.sgp.consolidador.helper.Util.println;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import dnit.sgp.consolidador.domain.Titulo;
 import dnit.sgp.consolidador.domain.dados.DadosPar;
@@ -29,6 +33,7 @@ public class Main {
     private static PropertiesService props;
     private static ArquivoProxy arquivoProxy;
     private static ArquivoService arquivoService;
+    private static ExecutorService executor;
 
 
     public static void main(String[] args) throws Exception {
@@ -38,6 +43,7 @@ public class Main {
         bootStrap();
         println("ok");
 
+        executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         print("\n Consolidando Dados.. ");
         if (props.getBooleanParam("consolidar_dados")) {
             println("");
@@ -73,7 +79,7 @@ public class Main {
 
 
 
-    private static void consolidaPAR() throws IOException {
+    private static void consolidaPAR() throws IOException, InterruptedException {
         StringBuffer linhas = new StringBuffer();
         linhas.append("SNV,Versao do SNV,Sentido,BR,UF,Regiao,Rodovia,Inicio (km),Final (km),Extensao (km),TipoPav,VDM,NanoUSACE,NanoAASHTO,NanoCCP,IRI (m/km),PSI,IGG,SCI,ATR (mm),FC2 (%),FC3 (%),TR (%),AP (%),ICS,Conceito ICS,Idade,E1,E2,E3,Esl,D0ref,SNef,Rc,JDR,Eccp,Kef,H1 (cm),H2 (cm),H3 (cm),VR (anos),Criterio_VR,CamadaCritica,Diagnostico,Medida,Tipo_ConservaPesada,hc (cm),HR (cm),Dp (0.01 mm),AcostLE,HRacLE,hcLE,Faixa1,hc1,HR1,Faixa2,hc2,HR2,Faixa3,hc3,HR3,Faixa4,hc4,HR4,AcostLD,HRacLD,hcLD,VR_Fx1,VR_Fx2,VR_Fx3,VR_Fx4" + "\n");
 
@@ -81,44 +87,60 @@ public class Main {
         var arquivosPar = arquivoService.getListArquivosPeloNome("PAR_", "Dados");
 
         for (var arquivoPar : arquivosPar) {
-            var titulo = new Titulo(arquivoPar.getFileName().toString(), props);
-            println(" ..Dado: " + titulo.getSNV());
-
-            String key = titulo.getSNV() + "_" + titulo.getSentido();
-            var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
-
-            var arquivoParamPar = arquivoService.getListArquivosPeloNome(key, "Calc/Params");
-            arquivoParamPar = arquivoService.removeArquivosComString("_FX1", arquivoParamPar);
-            var dadosParamPar = ParamsPar.CreateListComDadosDeDentroDoParampar(arquivoParamPar);
-
-            var arquivoProjeto = arquivoService.getListArquivosPeloNome(key, "Calc/Projeto/Params");
-            arquivoProjeto = arquivoService.removeArquivosComString("_FX1", arquivoProjeto);
-            arquivoProjeto = arquivoService.removeArquivosComString("CALIB", arquivoProjeto);
-            var dadosProjeto = ProjetoParam.CreateListComDadosDeDentroDoPar(arquivoProjeto);
-
-            var dadosNec = arquivoService.getDadosDentroDoArquivoPeloIndex(key, arquivoNec);
-            var nec = Nec.createListComDadosDentroDoNec(dadosNec);
-
-            var modelo = new ModeloConsolidado(
-                                            titulo,
-                                            dadosPar,
-                                            dadosParamPar,
-                                            dadosProjeto,
-                                            nec
-            );
-
-            linhas.append(modelo.getConsolidacao());
-
+            Runnable task = () -> {
+                try {
+                    taskDados(linhas, arquivoNec, arquivoPar);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            };
+            executor.submit(task);
         }
+        executor.shutdown();
+        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         arquivoService.salvaArquivo("Consolidado-dados", linhas);
     }
 
 
 
 
-    private static void consolidarEstra() throws IOException {
+    private static void taskDados(StringBuffer linhas, Path arquivoNec, Path arquivoPar) throws IOException {
+        var titulo = new Titulo(arquivoPar.getFileName().toString(), props);
+        println(" ..Dado: " + titulo.getSNV());
+
+        String key = titulo.getSNV() + "_" + titulo.getSentido();
+        var dadosPar = DadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
+
+        var arquivoParamPar = arquivoService.getListArquivosPeloNome(key, "Calc/Params");
+        arquivoParamPar = arquivoService.removeArquivosComString("_FX1", arquivoParamPar);
+        var dadosParamPar = ParamsPar.CreateListComDadosDeDentroDoParampar(arquivoParamPar);
+
+        var arquivoProjeto = arquivoService.getListArquivosPeloNome(key, "Calc/Projeto/Params");
+        arquivoProjeto = arquivoService.removeArquivosComString("_FX1", arquivoProjeto);
+        arquivoProjeto = arquivoService.removeArquivosComString("CALIB", arquivoProjeto);
+        var dadosProjeto = ProjetoParam.CreateListComDadosDeDentroDoPar(arquivoProjeto);
+
+        var dadosNec = arquivoService.getDadosDentroDoArquivoPeloIndex(key, arquivoNec);
+        var nec = Nec.createListComDadosDentroDoNec(dadosNec);
+
+        var modelo = new ModeloConsolidado(
+                                        titulo,
+                                        dadosPar,
+                                        dadosParamPar,
+                                        dadosProjeto,
+                                        nec
+        );
+
+        linhas.append(modelo.getConsolidacao());
+    }
+
+
+
+
+    private static void consolidarEstra() throws IOException, InterruptedException {
 
         for (int i = 0; i <= 10; i++) {
+            executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
             var linhas = new StringBuffer();
 
             var pastaEstrat = "Calc/Estrat_" + i;
@@ -138,73 +160,103 @@ public class Main {
             arquivosPar = arquivoService.removeArquivosComString("_FX1", arquivosPar);
             arquivosPar = arquivosPar.stream().filter(p -> contemNoNome(p, "ano ")).collect(Collectors.toList());
 
-            var hashArquivosPPIano = new HashMap<String, List<PPIAno>>();
-            for (var arquivoPPIano : arquivosPPIano) {
-                String ano = Util.getAnoInString(arquivoPPIano);
-                if (ano.isEmpty()) {
-                    continue;
-                }
-                hashArquivosPPIano.put(ano, PPIAno.CreateListComDadosDeDentroDoPPIano(arquivoPPIano));
+
+            HashMap<String, List<PPIAno>> mapAnoPPIano = new HashMap<>();
+
+            if (arquivosPPIano != null) {
+                arquivosPPIano.forEach(p -> {
+                    String ano = Util.getAnoInString(p);
+                    List<PPIAno> ppiAnos;
+                    try {
+                        ppiAnos = PPIAno.CreateListComDadosDeDentroDoPPIano(p);
+                        mapAnoPPIano.put(ano, ppiAnos);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
 
             for (var arquivoPar : arquivosPar) {
-                String ano = Util.getAnoInString(arquivoPar);
-                if (ano.isEmpty()) {
-                    continue;
-                }
-
-                Titulo titulo = new Titulo(arquivoPar.getFileName().toString(), props);
-                String key = titulo.getSNV() + "_" + titulo.getSentido();
-                println(" ....Estrategia: " + i + ", Dado: " + titulo.getSNV() + ", Ano: " + ano);
-
-                List<EstratDadosPar> dadosPar = null;
-                List<PPIAno> dadoPPIano = null;
-                List<QTpista> dadoQTpista = null;
-                List<QTacost> dadoQTacost = null;
-
-                dadosPar = EstratDadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
-                dadosPar.stream().forEach(par ->  {
-                    par.setAno(ano);
-                    par.setKey(key);
-                });
-
-                var arquivoPPIano = arquivosPPIano.stream()
-                                   .filter(p -> contemNoNome(p, "ppi_ano " + ano + ".csv"))
-                                   .findFirst();
-                if (arquivoPPIano.isPresent()) {
-                    dadoPPIano = PPIAno.CreateListComDadosDeDentroDoPPIano(arquivoPPIano.get());
-                }
-
-                if (arquivosQTpista != null) {
-                    var arquivoQTpista = arquivosQTpista.stream()
-                                                        .filter(p -> contemNoNome(p, titulo.getSNV() + "_" + titulo.getSentido()))
-                                                        .findFirst();
-                    if (arquivoQTpista.isPresent()) {
-                        dadoQTpista = QTpista.CreateListComDadosDeDentroDoQTpista(arquivoQTpista.get());
+                final int finalI = i;
+                Runnable task = () -> {
+                    try {
+                        taskEstrateg(finalI, linhas, mapAnoPPIano, arquivosQTpista, arquivosQTacost, arquivoPar);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                }
-
-                if (arquivosQTacost != null) {
-                    var arquivoQTacost = arquivosQTacost.stream()
-                                                        .filter(p -> contemNoNome(p, titulo.getSNV() + "_" + titulo.getSentido()))
-                                                        .findFirst();
-                    if (arquivoQTacost.isPresent()) {
-                        dadoQTacost = QTacost.CreateListComDadosDeDentroDoQTacost(arquivoQTacost.get());
-                    }
-                }
-
-                var modelo = new EstrategConsolidado(
-                    titulo,
-                    dadosPar,
-                    dadoPPIano,
-                    dadoQTpista,
-                    dadoQTacost
-                );
-
-                linhas.append(modelo.getConsolidacao());
+                };
+                executor.submit(task);
             }
+            executor.shutdown();
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+
             arquivoService.salvaArquivo("Consolidado-Estrat-" + i, linhas);
             System.out.println(" ..Estrategia: " + i + " ok");
+        }
+    }
+
+
+
+
+    private static void taskEstrateg(
+            int i,
+            StringBuffer linhas,
+            HashMap<String, List<PPIAno>> mapAnoPPIano,
+            List<Path> arquivosQTpista,
+            List<Path> arquivosQTacost,
+            Path arquivoPar)
+    throws IOException
+    {
+
+        String ano = Util.getAnoInString(arquivoPar);
+
+        if (!ano.isEmpty()) {
+            Titulo titulo = new Titulo(arquivoPar.getFileName().toString(), props);
+            String key = titulo.getSNV() + "_" + titulo.getSentido();
+            println(" ....Estrategia: " + i + ", Dado: " + titulo.getSNV() + ", Ano: " + ano);
+
+            List<EstratDadosPar> dadosPar = null;
+            List<PPIAno> dadoPPIano = null;
+            List<QTpista> dadoQTpista = null;
+            List<QTacost> dadoQTacost = null;
+
+            dadosPar = EstratDadosPar.CreateListComDadosDeDentroDoPar(arquivoPar);
+            dadosPar.stream().forEach(par ->  {
+                par.setAno(ano);
+                par.setKey(key);
+            });
+
+            if (mapAnoPPIano.containsKey(ano)) {
+                dadoPPIano = mapAnoPPIano.get(ano);
+            }
+
+            if (arquivosQTpista != null) {
+                var arquivoQTpista = arquivosQTpista.stream()
+                                                    .filter(p -> contemNoNome(p, titulo.getSNV() + "_" + titulo.getSentido()))
+                                                    .findFirst();
+                if (arquivoQTpista.isPresent()) {
+                    dadoQTpista = QTpista.CreateListComDadosDeDentroDoQTpista(arquivoQTpista.get());
+                }
+            }
+
+            if (arquivosQTacost != null) {
+                var arquivoQTacost = arquivosQTacost.stream()
+                                                    .filter(p -> contemNoNome(p, titulo.getSNV() + "_" + titulo.getSentido()))
+                                                    .findFirst();
+                if (arquivoQTacost.isPresent()) {
+                    dadoQTacost = QTacost.CreateListComDadosDeDentroDoQTacost(arquivoQTacost.get());
+                }
+            }
+
+            var modelo = new EstrategConsolidado(
+                titulo,
+                dadosPar,
+                dadoPPIano,
+                dadoQTpista,
+                dadoQTacost
+            );
+
+            linhas.append(modelo.getConsolidacao());
         }
     }
 
